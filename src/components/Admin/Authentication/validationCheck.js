@@ -19,7 +19,6 @@ import Copyright from '../../Common/Copyright';
 import Cookies from 'universal-cookie';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Redirect } from 'react-router-dom';
-import { env } from '../../../env'
 
 
 const cookies = new Cookies();
@@ -92,7 +91,7 @@ function ValidationCheck() {
 		// make a popup alert showing the "submitted" text
 		const configuration = {
 			method: 'post',
-			url: env.REACT_APP_URL+'api/authenticate',
+			url: process.env.REACT_APP_URL+'api/authenticate',
 			data: {
 				email,
 				password,
