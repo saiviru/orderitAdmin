@@ -1,11 +1,12 @@
-import defaultAxios from 'axios'
+import defaultAxios from 'axios';
+import { env } from '../../../../env'
 
 const axios = defaultAxios.create({
-  baseURL: process.env.REACT_APP_URL,
+  baseURL: env.REACT_APP_URL,
   headers: {'Content-Type': 'application/json'}
 });
 
-const baseURL=process.env.REACT_APP_URL;
+const baseURL= env.REACT_APP_URL;
 
 
 
