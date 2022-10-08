@@ -1,4 +1,6 @@
 import defaultAxios from 'axios';
+import * as toast from "../../../constants/ToastConstants";
+import * as notify from "../../../constants/ToastCaller";
 
 const axios = defaultAxios.create({
   baseURL: process.env.REACT_APP_URL,
@@ -34,7 +36,8 @@ export const createNewMenu = async (menu) => {
 // Delete existed todo
 export const deleteExistedMenu = async (id) => {
   try {
-    const menuData =await axios.delete(baseURL+`api/menu/${id}`)
+    const menuData =await axios.delete(baseURL+`api/menu/${id}`);
+		notify.notifySuccess(toast.MenuDeleteSuccessful);
     return menuData.data
   } catch(err) {
      return console.error(err)

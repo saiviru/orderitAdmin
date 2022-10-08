@@ -13,6 +13,7 @@ const ListMenu = ({ menu: { loading, menu }, getMenuList, deleteMenu }) => {
 		document.title = 'Order It - View Menu';
 		// eslint-disable-next-line
 	}, []);
+
 	return (
 		<React.Fragment>
 			<MiniDrawer headerTitle="View Menu Items" />

@@ -18,7 +18,10 @@ import axios from 'axios';
 import Copyright from '../../Common/Copyright';
 import Cookies from 'universal-cookie';
 import { useForm } from 'react-hook-form';
-import { useNavigate, Redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
+import * as toast from '../../constants/ToastConstants'
+import * as notify from '../../constants/ToastCaller';
 
 
 const cookies = new Cookies();
@@ -81,9 +84,6 @@ function ValidationCheck() {
 	const [password, setPassword] = React.useState('');
 	const [login, setLogin] = React.useState(false);
 
-	const onSubmit = (data) => {
-		alert(JSON.stringify(data));
-	}; // your form submit function which will invoke after successful validation
 
 	const handleLogin = () => {
 		// prevent the form from refreshing the whole page
@@ -111,9 +111,11 @@ function ValidationCheck() {
 					path: '/',
 				});
 				navigate('/dashboard');
+				notify.notifySuccess(toast.loginSuccessful);
 			})
 			.catch((error) => {
 				error = new Error();
+				notify.notifyError(toast.loginFailed);
 			});
 	};
 

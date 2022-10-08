@@ -8,6 +8,10 @@
   }
 }
 
+.menu h1 {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
 .form {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -135,4 +139,4 @@ p:before {
 .second:hover {
   background-position: 100px;
 }
-/*# sourceMappingURL=FirstPage.css.map */
+/*# sourceMappingURL=AddNewMenu.css.map */
