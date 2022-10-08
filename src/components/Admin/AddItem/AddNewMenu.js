@@ -82,9 +82,9 @@ const AddNewMenu = ({ createMenu }) => {
       menu.description &&
       menu.description.length > 0
     ) {
-      notify.notifySuccess(toast.MenuAddSuccessful);
       console.log("the menu items before sending:", menu);
       createMenu(menu);
+      notify.notifySuccess(toast.MenuAddSuccessful);
       setDescription("");
       setName("");
       setPrice("");

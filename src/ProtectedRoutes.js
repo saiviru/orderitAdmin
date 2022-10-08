@@ -5,6 +5,8 @@ import { useDispatch } from 'react-redux';
 import {
   LOGGED_USER,
 } from '../src/components/redux/menus/ActionTypes';
+import * as toast from "./components/constants/ToastConstants";
+import * as notify from "./components/constants/ToastCaller";
 
 const cookies = new Cookies();
 
@@ -32,6 +34,7 @@ const ProtectedRoutes = ({ component: Component, ...rest }) => {
     : <Navigate to="/login" replace />
   }
   else{
+    notify.notifyWarn(toast.LoginContinue);
     return <Navigate to="/login" replace />
   }
   
