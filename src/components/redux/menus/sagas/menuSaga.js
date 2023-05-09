@@ -51,7 +51,7 @@ function* createMenu({ payload }) {
   }
 
 
-  export default function* watcherSaga() {
+  export default function* menuSaga() {
     yield takeEvery(GET_MENUITEMS_REQUESTED, getMenuItems)
     yield takeLatest(CREATE_MENUITEMS_REQUESTED, createMenu)
     yield takeEvery(DELETE_MENU_REQUESTED, deleteMenu)

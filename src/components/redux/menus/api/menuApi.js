@@ -14,9 +14,9 @@ const baseURL= process.env.REACT_APP_URL;
 // Get All Todos
 export const getAllMenuItems = async () => {
   try {
-    const menus = await axios.get(baseURL+'api/menuGet')
+    const menus = await axios.get(baseURL+'api/menuGet');
 
-    return menus.data
+    return menus.data;
   } catch(err) {
     return console.error(err)
   }
