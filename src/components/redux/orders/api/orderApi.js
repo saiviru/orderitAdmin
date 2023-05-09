@@ -9,7 +9,7 @@ const baseURL= process.env.REACT_APP_URL;
 
 export const getAllOrderItems = async () => {
   try {
-    const orders = await axios.get(baseURL+'order/');
+    const orders = await axios.get(baseURL+'order');
     return orders.data
   } catch(err) {
     return console.error(err);
