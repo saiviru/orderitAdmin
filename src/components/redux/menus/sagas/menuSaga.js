@@ -26,7 +26,6 @@ function* getMenuItems() {
   
     const menuItems = yield call(getAllMenuItems);
 
-    console.log("the menu items called:",menuItems);
   
     yield put({ type: MENUITEMS, payload: menuItems })
   }
@@ -44,7 +43,6 @@ function* createMenu({ payload }) {
   // Delete menu
   function* deleteMenu({ payload }) {
     yield put({ type: SET_LOADING })
-    console.log("the delete menu called:",payload);
     const menu = yield call(deleteExistedMenu, payload)
   
     yield put({ type: DELETE_MENU, payload: menu })

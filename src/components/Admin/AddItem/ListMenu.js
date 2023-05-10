@@ -19,7 +19,6 @@ const ListMenu = ({ menu: { loading, menu }, getMenuList, deleteMenu }) => {
 			<MiniDrawer headerTitle="View Menu Items" />
 			{loading && 'Loading...'}
 			<ul className="mainList">
-				{console.log('the store from listmenu', menu)}
 				{menu && menu.length > 0 ? (
 					menu.map((item, id) => {
 						return (
