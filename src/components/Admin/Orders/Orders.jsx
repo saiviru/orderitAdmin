@@ -7,8 +7,14 @@ import Container from "@material-ui/core/Container";
 import { Grid } from "@material-ui/core";
 import Copyright from "../../Common/Copyright";
 import MiniDrawer from "../Sidebar/Sidebar";
-import { DataGrid } from '@mui/x-data-grid';
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { DataGrid } from "@mui/x-data-grid";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { GET_ORDERITEMS_REQUESTED } from "../../redux/orders/ActionTypes";
 import PropTypes from "prop-types";
 
@@ -98,8 +104,9 @@ const useStyles = makeStyles((theme) => ({
 
 function Orders({ orders: { loading, order }, getOrderItems }) {
   // const [orders, setOrders] = React.useState([]); // Replace with your order data
-  const [sortField, setSortField] = React.useState('');
-  const [filterValue, setFilterValue] = React.useState('');
+  const [sortField, setSortField] = React.useState("");
+  const [startDate, setStartDate] = React.useState("");
+  const [endDate, setEndDate] = React.useState("");
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -114,57 +121,150 @@ function Orders({ orders: { loading, order }, getOrderItems }) {
     setSortField(event.target.value);
   };
 
-  // Function to handle filtering
-  const handleFilter = (event) => {
-    setFilterValue(event.target.value);
+  const handleStartDateChange = (event) => {
+    setStartDate(event.target.value);
   };
 
-  // Apply sorting and filtering to the orders data
-  console.log("the orders :",order)
-  let filteredOrders = order;
-  if (sortField) {
-    filteredOrders = filteredOrders.sort((a, b) => a[sortField].localeCompare(b[sortField]));
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
+  };
+
+  // Filter orders based on the date range
+  let filteredOrders = [...order];
+  if (startDate && endDate) {
+    filteredOrders = filteredOrders.filter((order) => {
+      const createdAt = new Date(order.createdAt);
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      return createdAt >= start && createdAt <= end;
+    });
   }
-  if (filterValue) {
-    filteredOrders = filteredOrders.filter((order) =>
-      order.customer.toLowerCase().includes(filterValue.toLowerCase())
-    );
+
+  // Apply sorting and filtering to the orders data
+  console.log("the orders :", order);
+
+  // Sort orders based on the selected field
+  let sortedOrders = [...filteredOrders];
+  sortedOrders = sortedOrders.map((order, index) => ({
+    ...order,
+    id: index + 1, // You can change this to use a different unique identifier if needed
+  }));
+
+  if (sortField === "status") {
+    sortedOrders.sort((a, b) => a.status.localeCompare(b.status));
+  } else if (sortField === "totalAmount") {
+    sortedOrders.sort((a, b) => a.totalAmount - b.totalAmount);
+  } else if (sortField === "name") {
+    sortedOrders.sort((a, b) => a.items[0].name.localeCompare(b.items[0].name));
   }
 
   // Define columns for the DataGrid
   const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'customer', headerName: 'Customer', width: 200 },
-    { field: 'status', headerName: 'Status', width: 150 },
+    { field: "id", headerName: "ID", width: 100 },
+    {
+      field: "createdAt",
+      headerName: "Date",
+      width: 200,
+      renderCell: (params) => {
+        const dateTime = params.value;
+        const { istTime, istDate } = convertTime(dateTime);
+        return (
+          <span>
+            {istDate}, {istTime}
+          </span>
+        );
+      },
+    },
+    {
+      field: "items",
+      headerName: "Items",
+      width: 400,
+      renderCell: (params) => {
+        const items = params.value;
+        return (
+          <>
+            {items.map((item, index) => (
+              <span key={item._id} style={{ marginRight: "6px" }}>
+                {item.name} - {item.quantity}
+                {index < items.length - 1 && ","}
+              </span>
+            ))}
+          </>
+        );
+      },
+    },
+    { field: "status", headerName: "Status", width: 150 },
+    { field: "totalAmount", headerName: "Total", width: 150 },
     // Add more columns as needed
   ];
+
+  const convertTime = (data) => {
+    const utcDateTime = new Date(data);
+    const istDateTime = utcDateTime.toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
+    });
+    const istDate = utcDateTime.toLocaleDateString("en-US", {
+      timeZone: "Asia/Kolkata",
+    });
+    const istTime = utcDateTime.toLocaleTimeString("en-US", {
+      timeZone: "Asia/Kolkata",
+    });
+    return { istTime, istDate };
+  };
 
   return (
     <div className={classes.root}>
       <CssBaseline />
       <MiniDrawer headerTitle="Order History" />
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
+      <main className={classes.content} >
+        <div className={classes.appBarSpacer}/>
+        <Container maxWidth="lg" className={classes.container} style={{ marginTop: "26px" }}>
           <Grid container spacing={3}></Grid>
-          <FormControl>
+          <FormControl style= {{ minWidth: "160px" }}>
             <InputLabel>Sort By</InputLabel>
             <Select value={sortField} onChange={handleSort}>
               <MenuItem value="">None</MenuItem>
               <MenuItem value="id">ID</MenuItem>
-              <MenuItem value="customer">Customer</MenuItem>
+              <MenuItem value="customer">Total</MenuItem>
               <MenuItem value="status">Status</MenuItem>
               {/* Add more sorting options as needed */}
             </Select>
           </FormControl>
           <TextField
-            label="Filter by Customer"
-            value={filterValue}
-            onChange={handleFilter}
+            label="Start Date"
+            type="date"
+            value={startDate}
+            onChange={handleStartDateChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              style: { minWidth: "160px" },
+            }}
             style={{ marginLeft: 20 }}
           />
-          <div style={{ height: 400, width: "100%", marginTop: 20 }}>
-            <DataGrid rows={filteredOrders} columns={columns} pageSize={10} />
+          <TextField
+            label="End Date"
+            type="date"
+            value={endDate}
+            onChange={handleEndDateChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              style: { minWidth: "160px" },
+            }}
+            style={{ marginLeft: 20 }}
+          />
+          <div
+            style={{ height: 400, width: "100%", marginTop: 20, minWidth: 800 }}
+          >
+            <DataGrid
+              rows={sortedOrders}
+              columns={columns}
+              pageSize={10}
+              getRowId={(row) => row._id}
+            />
           </div>
           <Box pt={4}>
             <Copyright />
