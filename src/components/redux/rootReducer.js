@@ -1,8 +1,14 @@
-import { combineReducers } from 'redux';
-import menuDetails from './menus/reducer/index';
+import { combineReducers } from "redux";
+import menuDetails from "./menus/reducer/index";
+import orderDetails from "./orders/reducer/index";
+import categoryDetails from "./categories/reducer/index";
+import setUserDetails from "./users/reducer/index"
 
 const rootReducer = combineReducers({
-    menu: menuDetails,
+  menu: menuDetails,
+  order: orderDetails,
+  category: categoryDetails,
+  user: setUserDetails
 });
 
 export default rootReducer;

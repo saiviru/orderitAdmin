@@ -39,6 +39,11 @@ const SidebarItems = [
 		link: '/addItem',
 	},
 	{
+		icon: 'receipt',
+		text: 'Orders',
+		link: '/orders',
+	},
+	{
 		icon: 'group',
 		text: 'Manage People',
 		link: '/manage',

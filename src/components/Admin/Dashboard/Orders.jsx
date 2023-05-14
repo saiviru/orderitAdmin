@@ -1,25 +1,20 @@
-import React from 'react';
-import Link from '@material-ui/core/Link';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Title from './Title';
+import React, { useEffect, useState } from "react";
+import Link from "@material-ui/core/Link";
+import { makeStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import { Select, MenuItem, Button } from "@mui/material";
+import { GET_ORDERITEMS_REQUESTED } from "../../redux/orders/ActionTypes";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import Title from "./Title";
 
 // Generate Order Data
-function createData(id, date, name, shipTo, paymentMethod, amount) {
-  return { id, date, name, shipTo, paymentMethod, amount };
-}
 
-const rows = [
-  createData(0, '16 Mar, 2019', 'Elvis Presley', 'Tupelo, MS', 'VISA ⠀•••• 3719', 312.44),
-  createData(1, '16 Mar, 2019', 'Paul McCartney', 'London, UK', 'VISA ⠀•••• 2574', 866.99),
-  createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-  createData(3, '16 Mar, 2019', 'Michael Jackson', 'Gary, IN', 'AMEX ⠀•••• 2000', 654.39),
-  createData(4, '15 Mar, 2019', 'Bruce Springsteen', 'Long Branch, NJ', 'VISA ⠀•••• 5919', 212.79),
-];
+const orderOptions = ["New", "In-Progress", "completed"];
 
 function preventDefault(event) {
   event.preventDefault();
@@ -31,31 +26,76 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Orders() {
+const Orders = ({ orders: { loading, order }, getOrderItems }) => {
+  const [selectedOption, setSelectedOption] = useState("");
+  useEffect(() => {
+    getOrderItems();
+  }, []);
+
+  const capitalize = (str) =>{
+const str2 = str.charAt(0).toUpperCase() + str.slice(1);
+return str2
+  }
+
+  const handleSelectChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const convertTime = (data) => {
+    const utcDateTime = new Date(data);
+    const istDateTime = utcDateTime.toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
+    });
+    const istDate = utcDateTime.toLocaleDateString("en-US", {
+      timeZone: "Asia/Kolkata",
+    });
+    const istTime = utcDateTime.toLocaleTimeString("en-US", {
+      timeZone: "Asia/Kolkata",
+    });
+    return istTime;
+  };
+
   const classes = useStyles();
   return (
     <React.Fragment>
-      <Title>Recent Orders</Title>
+      <Title>Active Orders</Title>
+      {loading && "Loading..."}
       <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>Date</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Ship To</TableCell>
-            <TableCell>Payment Method</TableCell>
-            <TableCell align="right">Sale Amount</TableCell>
+            <TableCell>Table</TableCell>
+            <TableCell>Order Items</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell align="right">Order Total</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align="right">{row.amount}</TableCell>
-            </TableRow>
-          ))}
+          {order !== undefined && order.length > 0
+            ? order.map((order) => (
+                <TableRow key={order._id}>
+                  <TableCell>{convertTime(order.createdAt)}</TableCell>
+                  <TableCell>1</TableCell>
+                  <TableCell>
+                    {order.items.map((item) => (
+                      <div key={item._id}>
+                        {item.name} - {item.quantity}
+                      </div>
+                    ))}
+                  </TableCell>
+                  <TableCell>
+                    <Select value={capitalize(order.status)} onChange={handleSelectChange}>
+                      {orderOptions.map((option, id) => (
+                        <MenuItem key={id} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </TableCell>
+                  <TableCell align="right">{order.totalAmount}</TableCell>
+                </TableRow>
+              ))
+            : null}
         </TableBody>
       </Table>
       <div className={classes.seeMore}>
@@ -65,4 +105,22 @@ export default function Orders() {
       </div>
     </React.Fragment>
   );
-}
+};
+
+Orders.propTypes = {
+  loading: PropTypes.bool,
+  orders: PropTypes.array,
+  getOrderItems: PropTypes.func.isRequired,
+};
+
+// Get state to props
+const mapStateToProps = (state) => ({
+  orders: state.order,
+});
+
+// Get dispatch / function to props
+const mapDispatchToProps = (dispatch) => ({
+  getOrderItems: () => dispatch({ type: GET_ORDERITEMS_REQUESTED }),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Orders);
