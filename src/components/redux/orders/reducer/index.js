@@ -13,7 +13,6 @@ export default function orderDetails(state = INITIAL_STATE, action) {
 				loading: true,
 			};
 		case ACTIONTYPES.ORDERITEMS:
-			console.log("the orders:",action.payload)
 			return {
 				...state,
 				order:[],

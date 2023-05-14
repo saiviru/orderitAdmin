@@ -6,7 +6,6 @@ const API_TARGET_PROD = 'https://apisuper.thedigitalliciouss.com/api';
 module.exports = function(app) {
   if (process.env.REACT_APP_NODE_ENV === 'development') {
     // Development proxy configuration
-    console.log("does this even work?");
     app.use(
       '/api',
       createProxyMiddleware({

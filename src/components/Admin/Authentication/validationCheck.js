@@ -91,19 +91,18 @@ function ValidationCheck() {
 		// make a popup alert showing the "submitted" text
 		const configuration = {
 			method: 'post',
-			url: process.env.REACT_APP_URL+'api/authenticate',
+			url: '/api/authenticate',
 			data: {
 				email,
 				password,
 			},
 		};
 
-		console.log("the base url:",process.env.REACT_APP_URL);
 
 		axios(configuration)
 			.then((result) => {
                 console.log("the result:",result)
-				if (result.data.accessToken) {
+				if (result.data.token) {
 					localStorage.setItem('user', JSON.stringify(result.data));
 				}
 				setLogin(true);

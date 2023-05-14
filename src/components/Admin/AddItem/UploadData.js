@@ -27,7 +27,6 @@ const UploadData = () => {
         
         input.addEventListener("change", function(){
             file = this.files[0];
-            console.log("THE FILE ON SELECT:",file);
             showImage();
             dragArea.classList.add('active');
         })
@@ -55,7 +54,6 @@ const UploadData = () => {
     
     const showImage=()=>{
         let fileType = file.type;
-        console.log("the file selected in showImage function:",fileType)
         let validExtensions = ["image/jpeg", "image/jpg", "image/png"];
         if(validExtensions.includes(fileType)){
             let fileReader = new FileReader();

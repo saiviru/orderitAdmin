@@ -19,7 +19,6 @@ function* getOrderItems() {
   yield put({ type: SET_LOADING })
   
   const orderItems = yield call(getAllOrderItems);
-  console.log("the order items called:",orderItems);
 
     yield put({ type: ORDERITEMS, payload: orderItems })
   }

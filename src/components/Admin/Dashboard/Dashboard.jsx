@@ -103,21 +103,6 @@ function Dashboard(props) {
     const dispatch = useDispatch();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-    const getMenu = () => {
-      axios
-        .get('/api/menuGet')
-        .then((res) => {
-          if (res.data) {
-              console.log("response from api",res.data)
-              dispatch(viewMenu(res.data));
-          }
-        })
-        .catch((err) => console.log(err));
-    };
-
-    React.useEffect(()=>{
-      getMenu();
-    },[]);
   
     return (
       <div className={classes.root}>
