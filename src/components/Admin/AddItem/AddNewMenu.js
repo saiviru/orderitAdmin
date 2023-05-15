@@ -77,8 +77,6 @@ const myBucket = new AWS.S3({
   region: REGION,
 });
 
-
-
 const AddNewMenu = ({ createMenu, updateCategories }) => {
   const user = useSelector((state) => state.user.user);
   useEffect(() => {
@@ -87,8 +85,7 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
       try {
         const response = await axios.get(`/api/resCategories/${user.rId}`);
         const categories = response.data;
-        setOptions(categories.data)
-        // Further processing with the retrieved categories can be done here
+        setOptions(categories.data);
       } catch (err) {
         console.error(err);
       }
@@ -187,7 +184,9 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
   };
 
   useEffect(() => {
-    updateCategories(options, user.rId);
+    if (options.length > 0) {
+      updateCategories(options, user.rId);
+    }
   }, [options]);
 
   const handleDeleteOption = (option) => {
@@ -225,10 +224,9 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
   return (
     <React.Fragment>
       <div className="menu">
-        <MiniDrawer headerTitle="View Menu Items" />
+        <MiniDrawer headerTitle="Add Menu Items" />
         <CssBaseline />
         <Grid xs={12}>
-          <h1> Add New Menu Item</h1>
           <div className="wrap">
             <form className="form" onSubmit={addMenu}>
               <div className="contentHolder">
