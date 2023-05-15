@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import MiniDrawer from "../Sidebar/Sidebar";
 import UploadData from "./UploadData";
 import AWS from "aws-sdk";
-import axios from 'axios';
+import axios from "axios";
 import store from "../../redux/store";
 import "./AddNewMenu.css";
 import $ from "jquery";
@@ -13,8 +13,8 @@ import {
 } from "../../redux/menus/ActionTypes";
 import {
   PUT_CATEGORY_REQUESTED,
-  GET_CATEGORIES
-} from '../../redux/categories/ActionTypes';
+  GET_CATEGORIES,
+} from "../../redux/categories/ActionTypes";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { CssBaseline, Grid } from "@material-ui/core";
 import "react-toastify/dist/ReactToastify.css";
@@ -93,7 +93,6 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
     fetchData();
     // eslint-disable-next-line
   }, []);
-
 
   const dispatch = useDispatch();
   const [name, setName] = useState("");
@@ -215,7 +214,6 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
   const handleInputFocus = () => {
     setSelectedOption("");
   };
-
 
   const handleSelectOption = (option) => {
     setSelectedOption(option);
@@ -351,7 +349,10 @@ const mapDispatchToProps = (dispatch) => {
     createMenu: (menu) =>
       dispatch({ type: CREATE_MENUITEMS_REQUESTED, payload: menu }),
     updateCategories: (categories, restaurantId) =>
-      dispatch({ type: PUT_CATEGORY_REQUESTED, payload: {categories,restaurantId} }),
+      dispatch({
+        type: PUT_CATEGORY_REQUESTED,
+        payload: { categories, restaurantId },
+      }),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AddNewMenu);
