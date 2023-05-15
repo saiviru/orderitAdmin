@@ -3,6 +3,7 @@ import {BrowserRouter as Router,Routes,Route,} from "react-router-dom";
 import ProtectedRoutes from "./ProtectedRoutes";
 import AddNewMenu from './components/Admin/AddItem/AddNewMenu';
 import ListMenu from './components/Admin/AddItem/ListMenu';
+import MenuList from './components/Admin/AddItem/MenuList'
 import Orders from './components/Admin/Orders/Orders';
 import Logout from './components/Admin/Authentication/Logout';
 import Dashboard from './components/Admin/Dashboard/Dashboard';
@@ -22,7 +23,7 @@ function App() {
           <Route element={<ProtectedRoutes />}>
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path="/additem" element={<AddNewMenu />} />
-            <Route path="/viewmenu" element={<ListMenu />} />
+            <Route path="/viewmenu" element={<MenuList />} />
             <Route path="/orders" element={<Orders />} />
             {/* <Route path="/manage" element={<ListMenu />} />
             <Route path="/feedbacks" element={<ListMenu />} /> */}
