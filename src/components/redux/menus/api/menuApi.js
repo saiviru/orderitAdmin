@@ -18,11 +18,22 @@ export const getAllMenuItems = async () => {
   }
 }
 
-// Create New Todo
+// Create New Menu
 export const createNewMenu = async (menu) => {
   try {
     const menuData = await axios.post(`/api/menu`,menu)
 
+    return menuData.data
+  } catch(err) {
+    return console.error(err)
+  }
+}
+
+//Edit current Menu
+export const updateMenu = async (menu) => {
+  try {
+    const menuData = await axios.put(`/api/menuEdit`,menu)
+    notify.notifySuccess(toast.MenuUpdateSuccessful)
     return menuData.data
   } catch(err) {
     return console.error(err)
