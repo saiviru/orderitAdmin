@@ -136,6 +136,9 @@ function Orders({ orders: { loading, order }, getOrderItems }) {
       const createdAt = new Date(order.createdAt);
       const start = new Date(startDate);
       const end = new Date(endDate);
+      createdAt.setHours(0, 0, 0, 0);
+      start.setHours(0, 0, 0, 0);
+      end.setHours(0, 0, 0, 0);
       return createdAt >= start && createdAt <= end;
     });
   }
@@ -145,6 +148,7 @@ function Orders({ orders: { loading, order }, getOrderItems }) {
 
   // Sort orders based on the selected field
   let sortedOrders = [...filteredOrders];
+  sortedOrders = sortedOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   sortedOrders = sortedOrders.map((order, index) => ({
     ...order,
     id: index + 1, // You can change this to use a different unique identifier if needed
@@ -216,11 +220,15 @@ function Orders({ orders: { loading, order }, getOrderItems }) {
     <div className={classes.root}>
       <CssBaseline />
       <MiniDrawer headerTitle="Order History" />
-      <main className={classes.content} >
-        <div className={classes.appBarSpacer}/>
-        <Container maxWidth="lg" className={classes.container} style={{ marginTop: "26px" }}>
+      <main className={classes.content}>
+        <div className={classes.appBarSpacer} />
+        <Container
+          maxWidth="lg"
+          className={classes.container}
+          style={{ marginTop: "26px" }}
+        >
           <Grid container spacing={3}></Grid>
-          <FormControl style= {{ minWidth: "160px" }}>
+          <FormControl style={{ minWidth: "160px" }}>
             <InputLabel>Sort By</InputLabel>
             <Select value={sortField} onChange={handleSort}>
               <MenuItem value="">None</MenuItem>

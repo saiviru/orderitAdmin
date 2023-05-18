@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
-import { TextField, Button } from '@material-ui/core';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
+import {
+  TextField,
+  Button,
+  Radio,
+  RadioGroup,
+  Box,
+  FormControlLabel,
+  FormLabel,
+  FormControl,
+  ListItem,
+  ListItemText,
+  Typography
+} from "@material-ui/core";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   modalContent: {
     backgroundColor: theme.palette.background.paper,
@@ -19,12 +33,47 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
   buttonContainer: {
-    display: 'flex',
-    justifyContent: 'flex-end',
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  label: {
+    fontSize: "0.75rem",
+  },
+  listItem: {
+    display: "inline-flex",
+    alignItems: "center",
+    margin: "0 8px",
+    cursor: "pointer",
+    "&.active": {
+      fontWeight: "bold",
+      backgroundColor: "yellow",
+    },
+  },
+  optionsContainer: {
+    display: "flex",
+    alignItems: "center",
   },
 }));
 
 const EditMenuModal = ({ open, item, onSave, onClose }) => {
+  const [options, setOptions] = useState([]);
+  const user = useSelector((state) => state.user.user);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`/api/resCategories/${user.rId}`);
+        const categories = response.data;
+        setOptions(categories.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+  console.log({ options });
+
   const classes = useStyles();
   const [updatedItem, setUpdatedItem] = useState(item);
 
@@ -35,17 +84,11 @@ const EditMenuModal = ({ open, item, onSave, onClose }) => {
     });
   };
 
-  const handleSave = () => {
-    // Dispatch an action to save the updatedItem
-    // You can implement this based on your Redux flow
-    // For simplicity, let's assume there's an action called 'saveEditedMenu'
-    // and it will handle saving the updatedItem
-
-    // Call the action here with the updatedItem
-    // saveEditedMenu(updatedItem);
-
-    // Close the modal
-    onClose();
+  const handleSelectOption = (option) => {
+    setUpdatedItem({
+      ...updatedItem,
+      category: option,
+    });
   };
 
   return (
@@ -82,24 +125,58 @@ const EditMenuModal = ({ open, item, onSave, onClose }) => {
           onChange={handleChange}
           fullWidth
         />
-        <TextField
-          className={classes.textField}
-          label="Category"
-          name="category"
-          value={updatedItem.category}
-          onChange={handleChange}
-          fullWidth
-        />
-        <TextField
-          className={classes.textField}
-          label="Type"
-          name="type"
-          value={updatedItem.type}
-          onChange={handleChange}
-          fullWidth
-        />
+        <Box mb={3}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend" className={classes.label}>
+              Dish Type
+            </FormLabel>
+            <RadioGroup
+              label="Dish Type"
+              id="itemType"
+              name="type"
+              value={updatedItem.type}
+              onChange={handleChange}
+              row
+            >
+              <FormControlLabel
+                value="veg"
+                control={<Radio />}
+                label="Veg"
+                checked={updatedItem.type === "veg"}
+              />
+              <FormControlLabel
+                value="nonveg"
+                control={<Radio />}
+                label="Non - Veg"
+                checked={updatedItem.type === "nonveg"}
+              />
+            </RadioGroup>
+          </FormControl>
+        </Box>
+        <Box>
+          <Typography variant="subtitle1" component="div" gutterBottom className={classes.label}>
+            Category
+          </Typography>
+          <Box mt={1} className={classes.optionsContainer}>
+            {options.map((option, index) => (
+              <ListItem
+                key={index}
+                className={`${classes.listItem} ${
+                  option === updatedItem.category ? "active" : ""
+                }`}
+                component="span"
+                onClick={() => handleSelectOption(option)}
+              >
+                <ListItemText primary={option} />
+              </ListItem>
+            ))}
+          </Box>
+        </Box>
         <div className={classes.buttonContainer}>
-          <Button color="primary" onClick={() => onSave(updatedItem._id, updatedItem)}>
+          <Button
+            color="primary"
+            onClick={() => onSave(updatedItem._id, updatedItem)}
+          >
             Save
           </Button>
           <Button color="secondary" onClick={onClose}>
