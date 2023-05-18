@@ -41,6 +41,8 @@ return str2
     setSelectedOption(event.target.value);
   };
 
+  let sorted = order.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
   const convertTime = (data) => {
     const utcDateTime = new Date(data);
     const istDateTime = utcDateTime.toLocaleString("en-US", {
@@ -71,8 +73,8 @@ return str2
           </TableRow>
         </TableHead>
         <TableBody>
-          {order !== undefined && order.length > 0
-            ? order.map((order) => (
+          {sorted !== undefined && sorted.length > 0
+            ? sorted.map((order) => (
                 <TableRow key={order._id}>
                   <TableCell>{convertTime(order.createdAt)}</TableCell>
                   <TableCell>1</TableCell>
