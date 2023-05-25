@@ -10,6 +10,8 @@ import PropTypes from "prop-types";
 import {
   CREATE_MENUITEMS_REQUESTED,
   MENUIMAGES,
+  GET_MENUITEMS_REQUESTED,
+  EDIT_MENU_REQUESTED
 } from "../../redux/menus/ActionTypes";
 import {
   PUT_CATEGORY_REQUESTED,
@@ -77,9 +79,17 @@ const myBucket = new AWS.S3({
   region: REGION,
 });
 
-const AddNewMenu = ({ createMenu, updateCategories }) => {
+const AddNewMenu = ({
+  menu: { menu },
+  getMenuList,
+  editMenu,
+  createMenu,
+  updateCategories,
+}) => {
+  console.log("the menu in add menu,", menu);
   const user = useSelector((state) => state.user.user);
   useEffect(() => {
+    getMenuList();
     document.title = "Order It - Add new item";
     const fetchData = async () => {
       try {
@@ -190,6 +200,23 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
 
   const handleDeleteOption = (option) => {
     setOptions((prevOptions) => prevOptions.filter((o) => o !== option));
+    const menuItemsToUpdate = menu.filter((item) => item.category === option);
+
+    // Update the category of menu items to make them uncategorized
+    const updatedMenuItems = menu.map((item) => {
+      if (menuItemsToUpdate.includes(item)) {
+        return {
+          ...item,
+          category: null, // Assign null or another appropriate value to make it uncategorized
+        };
+      }
+    });
+    const uncategorised = updatedMenuItems.filter((menuItem) => {
+      if (menuItem !== undefined && menuItem.category === null) {
+        editMenu(menuItem._id,menuItem)
+        console.log("the updated menu on category delete", menuItem);
+      }
+    });
   };
 
   const handleInputChange = (event) => {
@@ -334,20 +361,26 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
 AddNewMenu.propTypes = {
   menu: PropTypes.array,
   createMenu: PropTypes.func.isRequired,
+  getMenuList: PropTypes.func.isRequired,
+  editMenu: PropTypes.func.isRequired,
   updateCategories: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
   return {
     images: state.images,
+    menu: state.menu,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     images: (file) => dispatch({ type: MENUIMAGES }),
+    getMenuList: () => dispatch({ type: GET_MENUITEMS_REQUESTED }),
     createMenu: (menu) =>
       dispatch({ type: CREATE_MENUITEMS_REQUESTED, payload: menu }),
+      editMenu: (id, item) =>
+    dispatch({ type: EDIT_MENU_REQUESTED, payload: { id, item } }),
     updateCategories: (categories, restaurantId) =>
       dispatch({
         type: PUT_CATEGORY_REQUESTED,
