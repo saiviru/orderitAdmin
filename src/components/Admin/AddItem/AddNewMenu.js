@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import MiniDrawer from "../Sidebar/Sidebar";
 import UploadData from "./UploadData";
 import AWS from "aws-sdk";
-import axios from 'axios';
+import axios from "axios";
 import store from "../../redux/store";
 import "./AddNewMenu.css";
 import $ from "jquery";
@@ -13,8 +13,8 @@ import {
 } from "../../redux/menus/ActionTypes";
 import {
   PUT_CATEGORY_REQUESTED,
-  GET_CATEGORIES
-} from '../../redux/categories/ActionTypes';
+  GET_CATEGORIES,
+} from "../../redux/categories/ActionTypes";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { CssBaseline, Grid } from "@material-ui/core";
 import "react-toastify/dist/ReactToastify.css";
@@ -77,8 +77,6 @@ const myBucket = new AWS.S3({
   region: REGION,
 });
 
-
-
 const AddNewMenu = ({ createMenu, updateCategories }) => {
   const user = useSelector((state) => state.user.user);
   useEffect(() => {
@@ -87,8 +85,7 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
       try {
         const response = await axios.get(`/api/resCategories/${user.rId}`);
         const categories = response.data;
-        setOptions(categories.data)
-        // Further processing with the retrieved categories can be done here
+        setOptions(categories.data);
       } catch (err) {
         console.error(err);
       }
@@ -96,7 +93,6 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
     fetchData();
     // eslint-disable-next-line
   }, []);
-
 
   const dispatch = useDispatch();
   const [name, setName] = useState("");
@@ -187,7 +183,9 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
   };
 
   useEffect(() => {
-    updateCategories(options, user.rId);
+    if (options.length > 0) {
+      updateCategories(options, user.rId);
+    }
   }, [options]);
 
   const handleDeleteOption = (option) => {
@@ -217,7 +215,6 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
     setSelectedOption("");
   };
 
-
   const handleSelectOption = (option) => {
     setSelectedOption(option);
   };
@@ -225,10 +222,9 @@ const AddNewMenu = ({ createMenu, updateCategories }) => {
   return (
     <React.Fragment>
       <div className="menu">
-        <MiniDrawer headerTitle="View Menu Items" />
+        <MiniDrawer headerTitle="Add Menu Items" />
         <CssBaseline />
         <Grid xs={12}>
-          <h1> Add New Menu Item</h1>
           <div className="wrap">
             <form className="form" onSubmit={addMenu}>
               <div className="contentHolder">
@@ -353,7 +349,10 @@ const mapDispatchToProps = (dispatch) => {
     createMenu: (menu) =>
       dispatch({ type: CREATE_MENUITEMS_REQUESTED, payload: menu }),
     updateCategories: (categories, restaurantId) =>
-      dispatch({ type: PUT_CATEGORY_REQUESTED, payload: {categories,restaurantId} }),
+      dispatch({
+        type: PUT_CATEGORY_REQUESTED,
+        payload: { categories, restaurantId },
+      }),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AddNewMenu);

@@ -1,56 +1,67 @@
+import { put, call, takeEvery, takeLatest } from "redux-saga/effects";
 import {
-    put,
-    call,
-    takeLatest,
-    takeEvery
-  } from 'redux-saga/effects';
-
-  import {
-    SET_LOADING,
-    MENUITEMS,
-    DELETE_MENU,
-    GET_MENUITEMS_REQUESTED,
-    CREATE_MENUITEMS_REQUESTED,
-    DELETE_MENU_REQUESTED
-  } from '../ActionTypes';
+  SET_LOADING,
+  MENUITEMS,
+  DELETE_MENU,
+  GET_MENUITEMS_REQUESTED,
+  CREATE_MENUITEMS_REQUESTED,
+  DELETE_MENU_REQUESTED,
+  EDIT_MENU_REQUESTED, EDIT_MENU
+} from "../ActionTypes";
 
 import {
-    getAllMenuItems,
-    createNewMenu,
-    deleteExistedMenu
-  } from '../api/menuApi';
+  getAllMenuItems,
+  createNewMenu,
+  updateMenu,
+  deleteExistedMenu,
+} from "../api/menuApi";
 
-  // Get Menu Items
+// Get Menu Items
 function* getMenuItems() {
-    yield put({ type: SET_LOADING })
-  
+  try {
+    yield put({ type: SET_LOADING });
     const menuItems = yield call(getAllMenuItems);
-
-  
-    yield put({ type: MENUITEMS, payload: menuItems })
+    yield put({ type: MENUITEMS, payload: menuItems });
+  } catch (error) {
+    // Handle error
   }
+}
 
-  // Create Menu
+// Create Menu
 function* createMenu({ payload }) {
-    yield put({ type: SET_LOADING })
-  
-    const newMenu = yield call(createNewMenu, payload)
-  
-    yield put({ type: MENUITEMS, payload: newMenu })
-    
+  try {
+    yield put({ type: SET_LOADING });
+    const newMenu = yield call(createNewMenu, payload);
+    yield put({ type: MENUITEMS, payload: newMenu });
+  } catch (error) {
+    // Handle error
   }
-  
-  // Delete menu
-  function* deleteMenu({ payload }) {
-    yield put({ type: SET_LOADING })
-    const menu = yield call(deleteExistedMenu, payload)
-  
-    yield put({ type: DELETE_MENU, payload: menu })
-  }
+}
 
-
-  export default function* menuSaga() {
-    yield takeEvery(GET_MENUITEMS_REQUESTED, getMenuItems)
-    yield takeLatest(CREATE_MENUITEMS_REQUESTED, createMenu)
-    yield takeEvery(DELETE_MENU_REQUESTED, deleteMenu)
+function* editMenu({ payload }) {
+  try {
+    const updatedMenu = yield call(updateMenu, payload);
+    console.log({updatedMenu})
+    yield put({ type: EDIT_MENU, payload: updatedMenu });
+  } catch (error) {
+    // Handle error if needed
   }
+}
+
+// Delete Menu
+function* deleteMenu({ payload }) {
+  try {
+    yield put({ type: SET_LOADING });
+    const menu = yield call(deleteExistedMenu, payload);
+    yield put({ type: DELETE_MENU, payload: menu });
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export default function* menuSaga() {
+  yield takeEvery(GET_MENUITEMS_REQUESTED, getMenuItems);
+  yield takeLatest(CREATE_MENUITEMS_REQUESTED, createMenu);
+  yield takeEvery(EDIT_MENU_REQUESTED, editMenu);
+  yield takeEvery(DELETE_MENU_REQUESTED, deleteMenu);
+}
