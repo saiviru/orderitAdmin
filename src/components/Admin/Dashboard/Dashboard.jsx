@@ -118,7 +118,7 @@ function Dashboard({orders: { loading, order },
       let sortedOrders = order
       .filter(
         (orderItem) =>
-          orderItem.status === "New" || orderItem.status === "In-Progress"
+          orderItem.status !== "Invalid"
       )
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     // Remove duplicates from sortedOrders array

@@ -17,7 +17,7 @@ import Title from "./Title";
 
 // Generate Order Data
 
-const orderOptions = ["New", "In-Progress", "Completed"];
+const orderOptions = ["New", "In-Progress", "Completed", "Invalid"];
 
 function preventDefault(event) {
   event.preventDefault();
