@@ -7,14 +7,17 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { Select, MenuItem, Button } from "@mui/material";
-import { GET_ORDERITEMS_REQUESTED } from "../../redux/orders/ActionTypes";
+import {
+  GET_ORDERITEMS_REQUESTED,
+  UPDATE_ORDERITEMS,
+} from "../../redux/orders/ActionTypes";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Title from "./Title";
 
 // Generate Order Data
 
-const orderOptions = ["New", "In-Progress", "completed"];
+const orderOptions = ["New", "In-Progress", "Completed"];
 
 function preventDefault(event) {
   event.preventDefault();
@@ -26,22 +29,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Orders = ({ orders: { loading, order }, getOrderItems }) => {
-  const [selectedOption, setSelectedOption] = useState("");
+const Orders = ({
+  orders: { loading, order },
+  getOrderItems,
+  updateOrderStatus,
+}) => {
+  const [sorted, setSorted] = useState();
+
   useEffect(() => {
     getOrderItems();
   }, []);
 
-  const capitalize = (str) =>{
-const str2 = str.charAt(0).toUpperCase() + str.slice(1);
-return str2
-  }
+  useEffect(() => {
+    let sortedOrders = order
+      .filter(
+        (orderItem) =>
+          orderItem.status === "New" || orderItem.status === "In-Progress"
+      )
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    // Remove duplicates from sortedOrders array
+    sortedOrders = sortedOrders.filter(
+      (orderItem, index, self) =>
+        index === self.findIndex((o) => o._id === orderItem._id)
+    );
 
-  const handleSelectChange = (event) => {
-    setSelectedOption(event.target.value);
+    setSorted(sortedOrders);
+  }, [order]);
+
+  const handleSelectChange = (event, orderId) => {
+    // Find the selected order in the 'sorted' array
+    // setSelectedOption(event.target.value)
+    const updatedOrders = sorted.map((orderItem) => {
+      if (orderItem._id === orderId) {
+        // Update the status of the selected order
+        return { ...orderItem, status: event.target.value };
+      }
+      return orderItem;
+    });
+    setSorted(updatedOrders);
+    const statusChanged = updatedOrders.filter(
+      (orderItem) => orderId === orderItem._id
+    );
+    console.log("the order status changed,", statusChanged);
+    updateOrderStatus(statusChanged[0], orderId);
+    // Update the state with the updated 'sorted' array
   };
-
-  let sorted = order.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const convertTime = (data) => {
     const utcDateTime = new Date(data);
@@ -56,6 +88,8 @@ return str2
     });
     return istTime;
   };
+
+  //change status for the order
 
   const classes = useStyles();
   return (
@@ -74,19 +108,24 @@ return str2
         </TableHead>
         <TableBody>
           {sorted !== undefined && sorted.length > 0
-            ? sorted.map((order) => (
-                <TableRow key={order._id}>
-                  <TableCell>{convertTime(order.createdAt)}</TableCell>
+            ? sorted.map((orderItem) => (
+                <TableRow key={orderItem._id}>
+                  <TableCell>{convertTime(orderItem.createdAt)}</TableCell>
                   <TableCell>1</TableCell>
                   <TableCell>
-                    {order.items.map((item) => (
+                    {orderItem.items.map((item) => (
                       <div key={item._id}>
                         {item.name} - {item.quantity}
                       </div>
                     ))}
                   </TableCell>
                   <TableCell>
-                    <Select value={capitalize(order.status)} onChange={handleSelectChange}>
+                    <Select
+                      value={orderItem.status}
+                      onChange={(event) =>
+                        handleSelectChange(event, orderItem._id)
+                      }
+                    >
                       {orderOptions.map((option, id) => (
                         <MenuItem key={id} value={option}>
                           {option}
@@ -94,7 +133,7 @@ return str2
                       ))}
                     </Select>
                   </TableCell>
-                  <TableCell align="right">{order.totalAmount}</TableCell>
+                  <TableCell align="right">{orderItem.totalAmount}</TableCell>
                 </TableRow>
               ))
             : null}
@@ -113,6 +152,7 @@ Orders.propTypes = {
   loading: PropTypes.bool,
   orders: PropTypes.array,
   getOrderItems: PropTypes.func.isRequired,
+  updateOrderStatus: PropTypes.func.isRequired,
 };
 
 // Get state to props
@@ -123,6 +163,11 @@ const mapStateToProps = (state) => ({
 // Get dispatch / function to props
 const mapDispatchToProps = (dispatch) => ({
   getOrderItems: () => dispatch({ type: GET_ORDERITEMS_REQUESTED }),
+  updateOrderStatus: (order, orderId) =>
+    dispatch({
+      type: UPDATE_ORDERITEMS,
+      payload: { order, orderId },
+    }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Orders);
