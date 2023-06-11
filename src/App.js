@@ -7,9 +7,14 @@ import MenuList from './components/Admin/AddItem/MenuList'
 import Orders from './components/Admin/Orders/Orders';
 import Logout from './components/Admin/Authentication/Logout';
 import Dashboard from './components/Admin/Dashboard/Dashboard';
+import QRgenerate from './components/Admin/GenerateQR/QRgenerate';
 import ValidationCheck from './components/Admin/Authentication/validationCheck';
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from 'react-toastify';
+
+
+
+
 
 
 function App() {
@@ -25,6 +30,7 @@ function App() {
             <Route path="/additem" element={<AddNewMenu />} />
             <Route path="/viewmenu" element={<MenuList />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/qrgenerate" element={<QRgenerate />} />
             {/* <Route path="/manage" element={<ListMenu />} />
             <Route path="/feedbacks" element={<ListMenu />} /> */}
           </Route>

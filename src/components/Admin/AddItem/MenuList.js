@@ -28,8 +28,9 @@ const MenuList = ({
   const user = useSelector((state) => state.user.user);
 
   useEffect(() => {
-    getMenuList();
+    getMenuList(user.rId);
     document.title = "Order It - View Menu";
+    console.log("the user id:",user)
     const fetchData = async () => {
       try {
         const response = await axios.get(`/api/resCategories/${user.rId}`);
@@ -152,7 +153,7 @@ const mapStateToProps = (state) => ({
 
 // Get dispatch / function to props
 const mapDispatchToProps = (dispatch) => ({
-  getMenuList: () => dispatch({ type: GET_MENUITEMS_REQUESTED }),
+  getMenuList: (id) => dispatch({ type: GET_MENUITEMS_REQUESTED, payload: id }),
   editMenu: (id, item) =>
     dispatch({ type: EDIT_MENU_REQUESTED, payload: { id, item } }),
   deleteMenu: (id) => dispatch({ type: DELETE_MENU_REQUESTED, payload: id }),
