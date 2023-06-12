@@ -148,12 +148,14 @@ function Orders({ orders: { loading, order }, getOrderItems }) {
 
   // Sort orders based on the selected field
   let sortedOrders = [...filteredOrders];
+  sortedOrders=sortedOrders.filter((orderItem)=>orderItem.status !== "Invalid")
   sortedOrders = sortedOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   sortedOrders = sortedOrders.map((order, index) => ({
     ...order,
     id: index + 1, // You can change this to use a different unique identifier if needed
   }));
 
+  console.log("the sorted orders:",sortedOrders)
   if (sortField === "status") {
     sortedOrders.sort((a, b) => a.status.localeCompare(b.status));
   } else if (sortField === "totalAmount") {
@@ -162,9 +164,14 @@ function Orders({ orders: { loading, order }, getOrderItems }) {
     sortedOrders.sort((a, b) => a.items[0].name.localeCompare(b.items[0].name));
   }
 
+  let i = 1;
   // Define columns for the DataGrid
   const columns = [
-    { field: "id", headerName: "ID", width: 100 },
+    {
+      field: "id",
+      headerName: "ID",
+      width: 100,
+    },
     {
       field: "createdAt",
       headerName: "Date",

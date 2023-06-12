@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,6 +14,10 @@ import MiniDrawer from '../Sidebar/Sidebar'
 
 import axios from 'axios';
 import {connect,useDispatch} from 'react-redux';
+import PropTypes from "prop-types";
+import {
+  GET_ORDERITEMS_REQUESTED,
+} from "../../redux/orders/ActionTypes";
 import {viewMenu} from '../../redux/Actions/ActionCreators';
 
 const drawerWidth = 240;
@@ -98,11 +102,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function Dashboard(props) {
+function Dashboard({orders: { loading, order },
+  getOrderItems}) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+    const [orderDetails, setorderDetails] = useState();
 
+    useEffect(() => {
+      getOrderItems();
+      console.log("count in dashboard")
+    }, []);
+
+    useEffect(() => {
+      let sortedOrders = order
+      .filter(
+        (orderItem) =>
+          orderItem.status !== "Invalid"
+      )
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    // Remove duplicates from sortedOrders array
+    sortedOrders = sortedOrders.filter(
+      (orderItem, index, self) =>
+        index === self.findIndex((o) => o._id === orderItem._id)
+    );
+      setorderDetails(sortedOrders);
+    }, [order]);
   
     return (
       <div className={classes.root}>
@@ -121,7 +146,7 @@ function Dashboard(props) {
               {/* Recent Deposits */}
               <Grid item xs={12} md={4} lg={3}>
                 <Paper className={fixedHeightPaper}>
-                  <Deposits />
+                  <Deposits orderss={orderDetails}/>
                 </Paper>
               </Grid>
               {/* Recent Orders */}
@@ -140,15 +165,23 @@ function Dashboard(props) {
     );
   }
 
+  Orders.propTypes = {
+    loading: PropTypes.bool,
+    orders: PropTypes.array,
+    getOrderItems: PropTypes.func.isRequired,
+  };
+
   const mapStateToProps = state => {
     return {
       menu: state.menu,
+      orders: state.order,
     }
   }
   
   const mapDispatchToProps = dispatch => {
     return {
         viewMenu: (menu) => dispatch(viewMenu(menu)),
+        getOrderItems: () => dispatch({ type: GET_ORDERITEMS_REQUESTED }),
       }
   }
 
