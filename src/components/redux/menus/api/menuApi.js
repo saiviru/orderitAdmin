@@ -10,7 +10,7 @@ const axios = defaultAxios.create({
 // Get All Todos
 export const getAllMenuItems = async (id) => {
   try {
-    const menus = await axios.get(`/api/menuGet/${id}`);
+    const menus = await axios.get(`/api/menuGet`);
     console.log("the menus return", menus)
 
     return menus.data;
