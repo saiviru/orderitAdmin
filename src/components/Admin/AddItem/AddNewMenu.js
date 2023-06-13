@@ -4,6 +4,7 @@ import UploadData from "./UploadData";
 import AWS from "aws-sdk";
 import axios from "axios";
 import store from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 import "./AddNewMenu.css";
 import $ from "jquery";
 import PropTypes from "prop-types";
@@ -36,6 +37,8 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { makeStyles } from "@material-ui/core/styles";
+import { handleUpload } from "../../../utils/s3ImageUpload";
+
 
 $("input").on("focusin", function () {
   $(this).parent().find("label").addClass("active");
@@ -63,21 +66,6 @@ const useStyles = makeStyles(() => ({
     alignItems: "center",
   },
 }));
-
-const S3_BUCKET = process.env.REACT_APP_BUCKET_NAME;
-const REGION = process.env.REACT_APP_REGION;
-const ACCESS_KEY = process.env.REACT_APP_IAM_USER_KEY;
-const SECRET_ACCESS_KEY = process.env.REACT_APP_IAM_USER_SECRET;
-
-AWS.config.update({
-  accessKeyId: ACCESS_KEY,
-  secretAccessKey: SECRET_ACCESS_KEY,
-});
-
-const myBucket = new AWS.S3({
-  params: { Bucket: S3_BUCKET },
-  region: REGION,
-});
 
 const AddNewMenu = ({
   menu: { menu },
@@ -114,6 +102,7 @@ const AddNewMenu = ({
   const [selectedOption, setSelectedOption] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const inputRef = useRef(null);
+  const navigate = useNavigate();
 
   const classes = useStyles();
 
@@ -154,6 +143,10 @@ const AddNewMenu = ({
     ) {
       createMenu(menu);
       notify.notifySuccess(toast.MenuAddSuccessful);
+      const refreshPage = () => {
+        navigate(0);
+      }
+      refreshPage();
       setDescription("");
       setName("");
       setPrice("");
@@ -166,24 +159,6 @@ const AddNewMenu = ({
     }
   };
 
-  const handleUpload = (file) => {
-    // Buffer.from(file,'base64');
-    const folder = "josh" + "/";
-    const params = {
-      Body: file,
-      Bucket: S3_BUCKET,
-      Key: folder + file.name,
-    };
-
-    myBucket
-      .putObject(params)
-      .on("httpUploadProgress", (evt) => {
-        // setProgress(Math.round((evt.loaded / evt.total) * 100))
-      })
-      .send((err) => {
-        if (err) console.log(err);
-      });
-  };
 
   const handleAddOption = () => {
     if (newOption.trim() !== "") {
