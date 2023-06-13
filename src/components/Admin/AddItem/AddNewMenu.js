@@ -4,6 +4,7 @@ import UploadData from "./UploadData";
 import AWS from "aws-sdk";
 import axios from "axios";
 import store from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 import "./AddNewMenu.css";
 import $ from "jquery";
 import PropTypes from "prop-types";
@@ -114,6 +115,7 @@ const AddNewMenu = ({
   const [selectedOption, setSelectedOption] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const inputRef = useRef(null);
+  const navigate = useNavigate();
 
   const classes = useStyles();
 
@@ -154,6 +156,10 @@ const AddNewMenu = ({
     ) {
       createMenu(menu);
       notify.notifySuccess(toast.MenuAddSuccessful);
+      const refreshPage = () => {
+        navigate(0);
+      }
+      refreshPage();
       setDescription("");
       setName("");
       setPrice("");
