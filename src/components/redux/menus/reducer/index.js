@@ -23,7 +23,7 @@ export default function menuDetails(state = INITIAL_STATE, action) {
     case ACTIONTYPES.MENUITEMS:
       return {
         ...state,
-        menu: state.menu.concat(action.payload),
+        menu: action.payload,
         loading: false,
       };
     case ACTIONTYPES.EDIT_MENU:
