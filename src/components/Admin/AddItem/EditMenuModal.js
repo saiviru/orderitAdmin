@@ -14,9 +14,11 @@ import {
   FormControl,
   ListItem,
   ListItemText,
-  Typography
+  Typography,
 } from "@material-ui/core";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { MENUIMAGES } from "../../redux/menus/ActionTypes";
+import { handleUpload } from "../../../utils/s3ImageUpload";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -57,7 +59,11 @@ const useStyles = makeStyles((theme) => ({
 
 const EditMenuModal = ({ open, item, onSave, onClose }) => {
   const [options, setOptions] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+
   const user = useSelector((state) => state.user.user);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,6 +97,25 @@ const EditMenuModal = ({ open, item, onSave, onClose }) => {
     });
   };
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    setSelectedImage(file);
+    console.log("the image details:", file.name);
+    dispatch({ type: MENUIMAGES, payload: file });
+    handleUpload(file);
+    setUpdatedItem({
+      ...updatedItem,
+      image: file.name,
+    });
+  };
+
+  const deleteImage = () => {
+    setUpdatedItem({
+      ...updatedItem,
+      image: "",
+    });
+  };
+
   return (
     <Modal
       className={classes.modal}
@@ -99,7 +124,21 @@ const EditMenuModal = ({ open, item, onSave, onClose }) => {
       aria-labelledby="edit-menu-modal"
       aria-describedby="edit-menu-modal-description"
     >
-      <div className={classes.modalContent}>
+      <Box
+        className={classes.modalContent}
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 4,
+          maxHeight: "80vh",
+          overflowY: "auto",
+        }}
+      >
         <h2 id="edit-menu-modal">Edit Menu Item</h2>
         <TextField
           className={classes.textField}
@@ -125,6 +164,79 @@ const EditMenuModal = ({ open, item, onSave, onClose }) => {
           onChange={handleChange}
           fullWidth
         />
+        <div>
+          <input
+            type="file"
+            accept="image/*"
+            id="upload-image-input"
+            style={{ display: "none" }}
+            onChange={handleImageUpload}
+          />
+          {selectedImage ? (
+            <div>
+              <label htmlFor="upload-image-input">
+                <Button component="span" variant="contained" color="primary">
+                  Change Image
+                </Button>
+              </label>
+              <label>
+                <Button
+                  component="span"
+                  variant="contained"
+                  color="warning"
+                  onClick={deleteImage}
+                >
+                  Delete Image
+                </Button>
+              </label>
+              <div>
+                <p>Selected Image: {selectedImage.name}</p>
+                <img
+                  src={URL.createObjectURL(selectedImage)}
+                  alt="Selected"
+                  width="50%"
+                  height="50%"
+                />
+              </div>
+            </div>
+          ) : updatedItem.image ? (
+            <div>
+              <label htmlFor="upload-image-input">
+                <Button component="span" variant="contained" color="primary">
+                  Change Image
+                </Button>
+              </label>
+              <label>
+                <Button
+                  component="span"
+                  variant="contained"
+                  color="warning"
+                  onClick={deleteImage}
+                >
+                  Delete Image
+                </Button>
+              </label>
+              <div>
+                <p>Selected Image: {updatedItem.image}</p>
+                <img
+                  src={`https://foodappdata.s3.ap-south-1.amazonaws.com/josh/${updatedItem.image}`}
+                  alt="Selected"
+                  width="50%"
+                  height="50%"
+                />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label htmlFor="upload-image-input">
+                <Button component="span" variant="contained" color="primary">
+                  Upload Image
+                </Button>
+              </label>
+              <div>No image selected</div>
+            </div>
+          )}
+        </div>
         <Box mb={3}>
           <FormControl component="fieldset">
             <FormLabel component="legend" className={classes.label}>
@@ -154,7 +266,12 @@ const EditMenuModal = ({ open, item, onSave, onClose }) => {
           </FormControl>
         </Box>
         <Box>
-          <Typography variant="subtitle1" component="div" gutterBottom className={classes.label}>
+          <Typography
+            variant="subtitle1"
+            component="div"
+            gutterBottom
+            className={classes.label}
+          >
             Category
           </Typography>
           <Box mt={1} className={classes.optionsContainer}>
@@ -183,7 +300,7 @@ const EditMenuModal = ({ open, item, onSave, onClose }) => {
             Cancel
           </Button>
         </div>
-      </div>
+      </Box>
     </Modal>
   );
 };

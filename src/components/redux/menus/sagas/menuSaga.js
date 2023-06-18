@@ -17,10 +17,10 @@ import {
 } from "../api/menuApi";
 
 // Get Menu Items
-function* getMenuItems() {
+function* getMenuItems({ payload }) {
   try {
     yield put({ type: SET_LOADING });
-    const menuItems = yield call(getAllMenuItems);
+    const menuItems = yield call(getAllMenuItems, payload);
     yield put({ type: MENUITEMS, payload: menuItems });
   } catch (error) {
     // Handle error
