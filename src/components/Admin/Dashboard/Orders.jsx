@@ -111,7 +111,7 @@ const Orders = ({
             ? sorted.map((orderItem) => (
                 <TableRow key={orderItem._id}>
                   <TableCell>{convertTime(orderItem.createdAt)}</TableCell>
-                  <TableCell>1</TableCell>
+                  <TableCell>{orderItem.table}</TableCell>
                   <TableCell>
                     {orderItem.items.map((item) => (
                       <div key={item._id}>

@@ -44,15 +44,20 @@ const SidebarItems = [
 		link: '/orders',
 	},
 	{
-		icon: 'group',
-		text: 'Manage People',
-		link: '/manage',
+		icon: 'qr_code',
+		text: 'QR code',
+		link: '/qrgenerate',
 	},
-	{
-		icon: 'feedback',
-		text: 'Feedbacks',
-		link: '/feedbacks',
-	},
+	// {
+	// 	icon: 'group',
+	// 	text: 'Manage People',
+	// 	link: '/manage',
+	// },
+	// {
+	// 	icon: 'feedback',
+	// 	text: 'Feedbacks',
+	// 	link: '/feedbacks',
+	// },
 ];
 
 const openedMixin = (theme) => ({
