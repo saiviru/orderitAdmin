@@ -8,6 +8,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Container, TextField, Button, Grid, Typography } from "@mui/material";
 import { SET_QRCODE } from "../../redux/qrcodes/ActionTypes";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
+
 
 import { connect, useSelector } from "react-redux";
 
@@ -24,6 +26,7 @@ const QRgenerate = ({ setQRcode }) => {
   const [maskedUrl, setMaskedUrl] = useState("");
   const [submitted, setSubmitted] = useState("");
   const classes = useStyles();
+  const navigate = useNavigate();
 
   const user = useSelector((state) => state.user.user);
   let qrcode = useSelector((state) => state.qr.qrCodes);
@@ -54,6 +57,10 @@ const QRgenerate = ({ setQRcode }) => {
     setSubmitted(false);
   };
 
+  const Listqr = () =>{
+    navigate('/listQR/'+user.rId)
+  }
+
   return (
     <div>
       <CssBaseline />
@@ -65,6 +72,7 @@ const QRgenerate = ({ setQRcode }) => {
           className={classes.container}
           style={{ marginTop: "26px" }}
         >
+          <Button onClick={Listqr} style={{marginLeft:"-70px"}} color="primary"> List all QRs</Button>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12}>
