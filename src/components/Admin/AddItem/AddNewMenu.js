@@ -141,7 +141,7 @@ const AddNewMenu = ({
       menu.type &&
       menu.type.length > 0
     ) {
-      createMenu(menu);
+      createMenu(user.rId,menu);
       notify.notifySuccess(toast.MenuAddSuccessful);
       const refreshPage = () => {
         navigate(0);
@@ -188,7 +188,7 @@ const AddNewMenu = ({
     });
     const uncategorised = updatedMenuItems.filter((menuItem) => {
       if (menuItem !== undefined && menuItem.category === null) {
-        editMenu(menuItem._id,menuItem)
+        editMenu(user.rId,menuItem._id,menuItem)
         console.log("the updated menu on category delete", menuItem);
       }
     });
@@ -352,10 +352,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     images: (file) => dispatch({ type: MENUIMAGES }),
     getMenuList: () => dispatch({ type: GET_MENUITEMS_REQUESTED }),
-    createMenu: (menu) =>
-      dispatch({ type: CREATE_MENUITEMS_REQUESTED, payload: menu }),
-      editMenu: (id, item) =>
-    dispatch({ type: EDIT_MENU_REQUESTED, payload: { id, item } }),
+    createMenu: (rId,menu) =>
+      dispatch({ type: CREATE_MENUITEMS_REQUESTED, payload: { rId, menu } }),
+      editMenu: (rId,id, item) =>
+    dispatch({ type: EDIT_MENU_REQUESTED, payload: { rId, id, item } }),
     updateCategories: (categories, restaurantId) =>
       dispatch({
         type: PUT_CATEGORY_REQUESTED,

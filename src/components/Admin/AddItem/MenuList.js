@@ -63,7 +63,7 @@ const MenuList = ({
 
   const handleUpdateItem = (itemId, updatedItem) => {
     console.log("is the item updated:", updatedItem);
-    editMenu(itemId, updatedItem);
+    editMenu(user.rId, itemId, updatedItem);
     setEditItemId(null);
   };
 
@@ -154,8 +154,8 @@ const mapStateToProps = (state) => ({
 // Get dispatch / function to props
 const mapDispatchToProps = (dispatch) => ({
   getMenuList: (id) => dispatch({ type: GET_MENUITEMS_REQUESTED, payload: id }),
-  editMenu: (id, item) =>
-    dispatch({ type: EDIT_MENU_REQUESTED, payload: { id, item } }),
+  editMenu: (rId, id, item) =>
+    dispatch({ type: EDIT_MENU_REQUESTED, payload: { rId, id, item } }),
   deleteMenu: (id) => dispatch({ type: DELETE_MENU_REQUESTED, payload: id }),
 });
 
