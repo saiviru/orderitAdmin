@@ -7,6 +7,7 @@ import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Chart from './Chart';
+import MyChart from './NewChart';
 import Deposits from './Deposits';
 import Orders from './Orders';
 import Copyright from '../../Common/Copyright';
@@ -144,7 +145,7 @@ function Dashboard({ orders: { loading, order }, getOrderItems }) {
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
-                <Chart />
+                <MyChart orderss={orderDetails}/>
               </Paper>
             </Grid>
             {/* Recent Deposits */}
