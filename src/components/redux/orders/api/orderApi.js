@@ -18,7 +18,7 @@ export const getAllOrderItems = async (id) => {
 
 export const updateOrder = async (order) => {
   try {
-    const orderStatus = await axios.put(`/api/orders/orderStatus`,order)
+    const orderStatus = await axios.put(`/api/updateOrderStatus`,order)
     notify.notifySuccess(toast.OrderStatusSuccessful)
     return orderStatus.data
   } catch(err) {

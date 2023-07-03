@@ -77,7 +77,7 @@ const Orders = ({
       (orderItem) => orderId === orderItem._id
     );
     console.log("the order status changed,", statusChanged);
-    updateOrderStatus(statusChanged[0], orderId);
+    updateOrderStatus(user.rId,statusChanged[0], orderId);
     // Update the state with the updated 'sorted' array
   };
 
@@ -169,10 +169,10 @@ const mapStateToProps = (state) => ({
 // Get dispatch / function to props
 const mapDispatchToProps = (dispatch) => ({
   getOrderItems: (id) => dispatch({ type: GET_ORDERITEMS_REQUESTED, payload: id }),
-  updateOrderStatus: (order, orderId) =>
+  updateOrderStatus: (rId, order, orderId) =>
     dispatch({
       type: UPDATE_ORDERITEMS,
-      payload: { order, orderId },
+      payload: { rId, order, orderId },
     }),
 });
 
