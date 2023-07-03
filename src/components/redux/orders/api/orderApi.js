@@ -6,10 +6,11 @@ const axios = defaultAxios.create({
   headers: {'Content-Type': 'application/json'}
 });
 
-export const getAllOrderItems = async () => {
+export const getAllOrderItems = async (id) => {
   try {
-    const orders = await axios.get(`/api/orders`);
-    return orders.data
+    console.log("the api call,",id)
+    const orders = await axios.get(`/api/getOrder/${id}`);
+    return orders.data.data;
   } catch(err) {
     return console.error(err);
   }

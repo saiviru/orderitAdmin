@@ -11,6 +11,7 @@ import {
   GET_ORDERITEMS_REQUESTED,
   UPDATE_ORDERITEMS,
 } from "../../redux/orders/ActionTypes";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Title from "./Title";
@@ -35,10 +36,15 @@ const Orders = ({
   updateOrderStatus,
 }) => {
   const [sorted, setSorted] = useState();
+  const user = useSelector((state) => state.user.user);
 
   useEffect(() => {
-    getOrderItems();
-  }, []);
+    console.log("how many times?",user.rId)
+    async function getItDone(){
+      await getOrderItems(user.rId);
+    }
+    getItDone();
+  }, [user.rId]);
 
   useEffect(() => {
     let sortedOrders = order
@@ -162,7 +168,7 @@ const mapStateToProps = (state) => ({
 
 // Get dispatch / function to props
 const mapDispatchToProps = (dispatch) => ({
-  getOrderItems: () => dispatch({ type: GET_ORDERITEMS_REQUESTED }),
+  getOrderItems: (id) => dispatch({ type: GET_ORDERITEMS_REQUESTED, payload: id }),
   updateOrderStatus: (order, orderId) =>
     dispatch({
       type: UPDATE_ORDERITEMS,
