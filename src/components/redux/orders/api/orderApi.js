@@ -6,10 +6,11 @@ const axios = defaultAxios.create({
   headers: {'Content-Type': 'application/json'}
 });
 
-export const getAllOrderItems = async () => {
+export const getAllOrderItems = async (id) => {
   try {
-    const orders = await axios.get(`/api/orders`);
-    return orders.data
+    console.log("the api call,",id)
+    const orders = await axios.get(`/api/getOrder/${id}`);
+    return orders.data.data;
   } catch(err) {
     return console.error(err);
   }
@@ -17,7 +18,7 @@ export const getAllOrderItems = async () => {
 
 export const updateOrder = async (order) => {
   try {
-    const orderStatus = await axios.put(`/api/orders/orderStatus`,order)
+    const orderStatus = await axios.put(`/api/updateOrderStatus`,order)
     notify.notifySuccess(toast.OrderStatusSuccessful)
     return orderStatus.data
   } catch(err) {
