@@ -15,7 +15,7 @@ const options = {
 };
 
 
-const MyChart = ({ orderss }) => {
+const MostOrdered = ({ orderss }) => {
   const [orderData, setOrderData] = useState([]);
   const [data, setData] = useState();
   let dataTotals = [];
@@ -112,4 +112,4 @@ const MyChart = ({ orderss }) => {
   );
 };
 
-export default MyChart;
+export default MostOrdered;

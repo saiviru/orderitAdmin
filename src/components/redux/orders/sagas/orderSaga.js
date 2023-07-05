@@ -22,7 +22,6 @@ import {
 function* getOrderItems({payload}) {
   yield put({ type: SET_LOADING })
   const orderItems = yield call(getAllOrderItems, payload);
-  console.log("in get orders:",orderItems)
     yield put({ type: ORDERITEMS, payload: orderItems })
   }
 
