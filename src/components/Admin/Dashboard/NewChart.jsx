@@ -25,7 +25,6 @@ const MyChart = ({ orderss }) => {
     if (orderss && orderss.length > 0) {
       orderss.map((order) => {
         const dateObject = new Date(order.createdAt);
-        console.log("the orders history from chart", dateObject);
         if (dateObject.toDateString() === currentDate.toDateString()) {
           todaysOrders.push(order);
         }
@@ -105,22 +104,9 @@ const MyChart = ({ orderss }) => {
     ],
   };
 
-  const convertTime = (data) => {
-    const utcDateTime = new Date(data);
-    const istDateTime = utcDateTime.toLocaleString("en-US", {
-      timeZone: "Asia/Kolkata",
-    });
-    const istDate = utcDateTime.toLocaleDateString("en-US", {
-      timeZone: "Asia/Kolkata",
-    });
-    const istTime = utcDateTime.toLocaleTimeString("en-US", {
-      timeZone: "Asia/Kolkata",
-    });
-    return istTime;
-  };
   return (
     <div>
-      {data ? <Bar data={data} options={options} /> : <p>Loading...</p>}
+      {data ? <Bar data={data} options={options} /> : <p>No data to show...</p>}
     </div>
   );
 };
