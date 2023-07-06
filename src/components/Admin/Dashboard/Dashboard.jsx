@@ -12,8 +12,6 @@ import Deposits from './Deposits';
 import Orders from './Orders';
 import Copyright from '../../Common/Copyright';
 import MiniDrawer from '../Sidebar/Sidebar'
-
-import axios from 'axios';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import PropTypes from "prop-types";
 import {

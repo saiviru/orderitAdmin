@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -42,6 +42,11 @@ const SidebarItems = [
 		icon: 'receipt',
 		text: 'Orders',
 		link: '/orders',
+	},
+	{
+		icon: 'query_stats',
+		text: 'Statisics',
+		link: '/statistics',
 	},
 	{
 		icon: 'qr_code',
@@ -139,6 +144,9 @@ function MiniDrawer(props ) {
 	const oopen = Boolean(anchorEl);
 	const classes = useStyles();
 
+	const user = useSelector((state) => state.user.user);
+
+
 	
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -208,7 +216,6 @@ function MiniDrawer(props ) {
 							/>
 						</Button>
 					</div>
-
 					<Menu
 						id="fade-menu"
 						anchorEl={anchorEl}
@@ -217,10 +224,9 @@ function MiniDrawer(props ) {
 						onClose={handleClose}
 						TransitionComponent={Fade}
 					>
-						<MenuItem onClick={handleClose}>Profile</MenuItem>
+						<Link href='/profile' color="inherit" sx={{ textDecoration: 'none' }}><MenuItem onClick={handleClose}>Profile - {user.username}</MenuItem></Link>
 						<MenuItem onClick={handleClose}>My account</MenuItem>
 						<Link href='/logout' color="inherit" sx={{ textDecoration: 'none' }}><MenuItem onClick={handleClose}>Logout</MenuItem></Link>
-						
 					</Menu>
 				</Toolbar>
 			</AppBar>
