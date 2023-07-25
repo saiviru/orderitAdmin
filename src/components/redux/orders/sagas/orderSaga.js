@@ -1,7 +1,8 @@
 import {
     put,
     call,
-    takeEvery
+    takeEvery,
+    takeLatest
   } from 'redux-saga/effects';
 
   import {
@@ -18,11 +19,9 @@ import {
   } from '../api/orderApi';
 
   // Get Menu Items
-function* getOrderItems() {
+function* getOrderItems({payload}) {
   yield put({ type: SET_LOADING })
-  
-  const orderItems = yield call(getAllOrderItems);
-
+  const orderItems = yield call(getAllOrderItems, payload);
     yield put({ type: ORDERITEMS, payload: orderItems })
   }
 
@@ -37,6 +36,6 @@ function* getOrderItems() {
   }
 
   export default function* orderSaga() {
-    yield takeEvery(GET_ORDERITEMS_REQUESTED, getOrderItems);
+    yield takeLatest(GET_ORDERITEMS_REQUESTED, getOrderItems);
   yield takeEvery(UPDATE_ORDERITEMS, editOrder);
   }

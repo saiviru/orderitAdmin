@@ -50,9 +50,11 @@ function* editMenu({ payload }) {
 
 // Delete Menu
 function* deleteMenu({ payload }) {
+  console.log("the payload is here:",payload)
   try {
     yield put({ type: SET_LOADING });
     const menu = yield call(deleteExistedMenu, payload);
+    console.log("the menu after delete in saga:",menu)
     yield put({ type: DELETE_MENU, payload: menu });
   } catch (e) {
     console.log(e);

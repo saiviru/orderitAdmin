@@ -1,43 +1,46 @@
-import './App.css';
-import {BrowserRouter as Router,Routes,Route,} from "react-router-dom";
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./ProtectedRoutes";
-import AddNewMenu from './components/Admin/AddItem/AddNewMenu';
-import ListMenu from './components/Admin/AddItem/ListMenu';
-import MenuList from './components/Admin/AddItem/MenuList'
-import Orders from './components/Admin/Orders/Orders';
-import Logout from './components/Admin/Authentication/Logout';
-import Dashboard from './components/Admin/Dashboard/Dashboard';
-import QRgenerate from './components/Admin/GenerateQR/QRgenerate';
-import ValidationCheck from './components/Admin/Authentication/validationCheck';
+import AddNewMenu from "./components/Admin/AddItem/AddNewMenu";
+import ListMenu from "./components/Admin/AddItem/ListMenu";
+import MenuList from "./components/Admin/AddItem/MenuList";
+import Orders from "./components/Admin/Orders/Orders";
+import Logout from "./components/Admin/Authentication/Logout";
+import Dashboard from "./components/Admin/Dashboard/Dashboard";
+import QRgenerate from "./components/Admin/GenerateQR/QRgenerate";
+import ViewQR from './components/Admin/GenerateQR/ViewQR';
+import ListQR from './components/Admin/GenerateQR/ListQR';
+import Stats from "./components/Admin/Stats/Stats";
+import Profile from "./components/Admin/Profile/Profile";
+import ValidationCheck from "./components/Admin/Authentication/validationCheck";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from 'react-toastify';
-
-
-
-
-
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route path ="/" element={<ValidationCheck />} />
+          <Route path="/" element={<ValidationCheck />} />
           <Route path="/login" element={<ValidationCheck />} />
           <Route path="/logout" element={<Logout />} />
           <Route element={<ProtectedRoutes />}>
-            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/additem" element={<AddNewMenu />} />
             <Route path="/viewmenu" element={<MenuList />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/qrgenerate" element={<QRgenerate />} />
+            <Route path="/viewQR/:id" element={<ViewQR />} />
+            <Route path="/listQR/:id" element={<ListQR />} />
+            <Route path="/statistics" element={<Stats />} />
+            <Route path="/profile" element={<Profile />} />
             {/* <Route path="/manage" element={<ListMenu />} />
             <Route path="/feedbacks" element={<ListMenu />} /> */}
           </Route>
         </Routes>
       </Router>
-      <ToastContainer style={{fontSize:'1rem'}} />
-    </div>
+      <ToastContainer style={{ fontSize: "1rem" }} />
+    </div >
   );
 }
 

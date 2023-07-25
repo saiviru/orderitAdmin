@@ -1,24 +1,23 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import {Grid} from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Chart from './Chart';
+import MyChart from './NewChart';
 import Deposits from './Deposits';
 import Orders from './Orders';
 import Copyright from '../../Common/Copyright';
 import MiniDrawer from '../Sidebar/Sidebar'
-
-import axios from 'axios';
-import {connect,useDispatch} from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import PropTypes from "prop-types";
 import {
   GET_ORDERITEMS_REQUESTED,
 } from "../../redux/orders/ActionTypes";
-import {viewMenu} from '../../redux/Actions/ActionCreators';
+import { viewMenu } from '../../redux/Actions/ActionCreators';
 
 const drawerWidth = 240;
 
@@ -102,20 +101,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function Dashboard({orders: { loading, order },
-  getOrderItems}) {
-    const classes = useStyles();
-    const dispatch = useDispatch();
-    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-    const [orderDetails, setorderDetails] = useState();
+function Dashboard({ orders: { loading, order }, getOrderItems }) {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const [orderDetails, setorderDetails] = useState();
+  const user = useSelector((state) => state.user.user);
 
-    useEffect(() => {
-      getOrderItems();
-      console.log("count in dashboard")
-    }, []);
 
-    useEffect(() => {
-      let sortedOrders = order
+  useEffect(() => {
+    console.log("how many times?",user.rId)
+    async function getItDone(){
+      await getOrderItems(user.rId);
+    }
+    getItDone();
+  }, [user.rId]);
+
+  useEffect(() => {
+    let sortedOrders = order
       .filter(
         (orderItem) =>
           orderItem.status !== "Invalid"
@@ -126,63 +129,63 @@ function Dashboard({orders: { loading, order },
       (orderItem, index, self) =>
         index === self.findIndex((o) => o._id === orderItem._id)
     );
-      setorderDetails(sortedOrders);
-    }, [order]);
-  
-    return (
-      <div className={classes.root}>
-        <CssBaseline />
-        <MiniDrawer headerTitle="Dashboard" />
-        <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
-          <Container maxWidth="lg" className={classes.container}>
-            <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper className={fixedHeightPaper}>
-                  <Chart />
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper className={fixedHeightPaper}>
-                  <Deposits orderss={orderDetails}/>
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  <Orders />
-                </Paper>
-              </Grid>
+    setorderDetails(sortedOrders);
+  }, [order]);
+
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <MiniDrawer headerTitle="Dashboard" />
+      <main className={classes.content}>
+        <div className={classes.appBarSpacer} />
+        <Container maxWidth="lg" className={classes.container}>
+          <Grid container spacing={3}>
+            {/* Chart */}
+            <Grid item xs={12} md={8} lg={9}>
+              <Paper className={fixedHeightPaper}>
+                <MyChart orderss={orderDetails}/>
+              </Paper>
             </Grid>
-            <Box pt={4}>
-              <Copyright />
-            </Box>
-          </Container>
-        </main>
-      </div>
-    );
-  }
+            {/* Recent Deposits */}
+            <Grid item xs={12} md={4} lg={3}>
+              <Paper className={fixedHeightPaper}>
+                <Deposits orderss={orderDetails} />
+              </Paper>
+            </Grid>
+            {/* Recent Orders */}
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <Orders orderss={orderDetails}/>
+              </Paper>
+            </Grid>
+          </Grid>
+          <Box pt={4}>
+            <Copyright />
+          </Box>
+        </Container>
+      </main>
+    </div>
+  );
+}
 
-  Orders.propTypes = {
-    loading: PropTypes.bool,
-    orders: PropTypes.array,
-    getOrderItems: PropTypes.func.isRequired,
-  };
+Orders.propTypes = {
+  loading: PropTypes.bool,
+  orders: PropTypes.array,
+  getOrderItems: PropTypes.func.isRequired,
+};
 
-  const mapStateToProps = state => {
-    return {
-      menu: state.menu,
-      orders: state.order,
-    }
+const mapStateToProps = state => {
+  return {
+    menu: state.menu,
+    orders: state.order,
   }
-  
-  const mapDispatchToProps = dispatch => {
-    return {
-        viewMenu: (menu) => dispatch(viewMenu(menu)),
-        getOrderItems: () => dispatch({ type: GET_ORDERITEMS_REQUESTED }),
-      }
-  }
+}
 
-  export default connect(mapStateToProps,mapDispatchToProps)(Dashboard);
+const mapDispatchToProps = dispatch => {
+  return {
+    viewMenu: (menu) => dispatch(viewMenu(menu)),
+    getOrderItems: (id) => dispatch({ type: GET_ORDERITEMS_REQUESTED, payload: id }),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

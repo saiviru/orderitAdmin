@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -19,7 +19,7 @@ import { GET_ORDERITEMS_REQUESTED } from "../../redux/orders/ActionTypes";
 import PropTypes from "prop-types";
 
 import axios from "axios";
-import { connect, useDispatch } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -104,17 +104,22 @@ const useStyles = makeStyles((theme) => ({
 
 function Orders({ orders: { loading, order }, getOrderItems }) {
   // const [orders, setOrders] = React.useState([]); // Replace with your order data
-  const [sortField, setSortField] = React.useState("");
-  const [startDate, setStartDate] = React.useState("");
-  const [endDate, setEndDate] = React.useState("");
+  const [sortField, setSortField] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const classes = useStyles();
   const dispatch = useDispatch();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const user = useSelector((state) => state.user.user);
 
-  React.useEffect(() => {
-    getOrderItems();
-  }, []);
+
+  useEffect(() => {
+    async function getItDone(){
+      await getOrderItems(user.rId);
+    }
+    getItDone();
+  }, [user.rId]);
 
   // Function to handle sorting
   const handleSort = (event) => {
@@ -301,9 +306,9 @@ const mapStateToProps = (state) => ({
   orders: state.order,
 });
 
-// Get dispatch / function to props
 const mapDispatchToProps = (dispatch) => ({
-  getOrderItems: () => dispatch({ type: GET_ORDERITEMS_REQUESTED }),
+  getOrderItems: (id) =>
+    dispatch({ type: GET_ORDERITEMS_REQUESTED, payload: id }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Orders);
