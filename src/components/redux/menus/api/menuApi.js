@@ -45,7 +45,7 @@ export const updateMenu = async (menu) => {
 // Delete existed todo
 export const deleteExistedMenu = async (id) => {
   try {
-    const menuData =await axios.delete(`/api/menu/${id}`);
+    const menuData =await axios.delete(`/api/deleteMenu/${id.id},${id.rId}`);
 		notify.notifySuccess(toast.MenuDeleteSuccessful);
     return menuData.data
   } catch(err) {

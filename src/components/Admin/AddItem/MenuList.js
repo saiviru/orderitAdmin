@@ -45,6 +45,7 @@ const MenuList = ({
   }, []);
 
   useEffect(() => {
+    console.log("the new menu called?",menu);
     if (selectedCategory === "All") {
       // Show all menu items if no category is selected
       setUpdatedMenu(menu.filter((item) => !item.deleted));
@@ -72,8 +73,8 @@ const MenuList = ({
   };
 
   const handleDelete = (itemId) => {
-    deleteMenu(itemId);
-    setUpdatedMenu(updatedMenu.filter((item) => item._id !== itemId));
+    deleteMenu(itemId, user.rId);
+    // setUpdatedMenu(updatedMenu.filter((item) => item._id !== itemId));
   };
 
   // on select categories
@@ -156,7 +157,7 @@ const mapDispatchToProps = (dispatch) => ({
   getMenuList: (id) => dispatch({ type: GET_MENUITEMS_REQUESTED, payload: id }),
   editMenu: (rId, id, item) =>
     dispatch({ type: EDIT_MENU_REQUESTED, payload: { rId, id, item } }),
-  deleteMenu: (id) => dispatch({ type: DELETE_MENU_REQUESTED, payload: id }),
+  deleteMenu: (id, rId) => dispatch({ type: DELETE_MENU_REQUESTED, payload: {id, rId} }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MenuList);

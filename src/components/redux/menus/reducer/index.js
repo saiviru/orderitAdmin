@@ -48,7 +48,7 @@ export default function menuDetails(state = INITIAL_STATE, action) {
       const deletedItemId = action.payload;
       return {
         ...state,
-        menu: state.menu.filter((item) => item._id !== deletedItemId._id),
+        menu: action.payload,
         loading: false,
       };
     case ACTIONTYPES.LOGGED_USER:
